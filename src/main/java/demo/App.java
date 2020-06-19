@@ -1,4 +1,4 @@
-package san-spider;
+package demo;
 
 /**
  * Hello world!

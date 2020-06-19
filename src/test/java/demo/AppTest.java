@@ -1,4 +1,4 @@
-package san-spider;
+package demo;
 
 import static org.junit.Assert.assertTrue;
 
