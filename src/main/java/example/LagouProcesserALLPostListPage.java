@@ -16,7 +16,7 @@ import java.util.List;
  * @since 0.3.2
  */
 //@TargetUrl("http://my.oschina.net/flashsword/blog/\\d+")
-public class LagouProcesserSinglePage implements PageProcessor {
+public class LagouProcesserALLPostListPage implements PageProcessor {
 
 
     // 抓取网站的相关配置，包括编码、抓取间隔、重试次数等
@@ -36,7 +36,7 @@ public class LagouProcesserSinglePage implements PageProcessor {
     private static void testLimitTimeInPeriod() {
         String url = "https://www.lagou.com/zhaopin/ceo/1/?filterOption=2&sid=9de38bbecf074f4499e37b5deb050a76";
         for(int i=0;i<20;i++){
-            Spider.create(new LagouProcesserSinglePage()).addUrl(url).thread(5).run();
+            Spider.create(new LagouProcesserALLPostListPage()).addUrl(url).thread(5).run();
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
@@ -56,7 +56,7 @@ public class LagouProcesserSinglePage implements PageProcessor {
             //只需要1、2、3、4、5、6页
             if(j!=0){
                 ArrayList<Object> list = new ArrayList<>();
-                Spider.create(new LagouProcesserSinglePage()).addUrl(url1+j+url2).thread(5).run();
+                Spider.create(new LagouProcesserALLPostListPage()).addUrl(url1+j+url2).thread(5).run();
                 try {
                     if(count==5){
                         count=1;
