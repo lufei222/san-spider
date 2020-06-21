@@ -16,8 +16,12 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.pipeline.FilePipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
- 
-public class GiteeSpider implements PageProcessor {
+
+
+/**
+ * gitee自动化登录获取私有项目
+ */
+public class GiteeAutoLoginSpider implements PageProcessor {
 
 	private static String GITEE_NAME = System.getenv("GITEE_NAME");
 	private static String GITEE_USERNAME = System.getenv("GITEE_USERNAME");
@@ -105,7 +109,7 @@ public class GiteeSpider implements PageProcessor {
 	public static void main(String[] args) {
  
 		String url = "https://gitee.com/"+GITEE_NAME+"/dashboard/projects?scope=private&&sort="; // 地址
-		GiteeSpider dome = new GiteeSpider();
+		GiteeAutoLoginSpider dome = new GiteeAutoLoginSpider();
         // 登陆
 		dome.login();
 		Spider.create(dome)

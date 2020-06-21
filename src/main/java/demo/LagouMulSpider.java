@@ -22,7 +22,7 @@ import java.util.Random;
  * 拉钩多种不同方式实现的爬虫
  * 测试htmlunit、jsoup、httpclient直接爬取
  */
-public class LagouMulSpiderDemo {
+public class LagouMulSpider {
 
     static Random random = new Random();
     private static String LAGOU_URL = "https://www.lagou.com/zhaopin/ceo/1/?filterOption=3&sid=f1937baf1115438c9ea9aee62836a985";

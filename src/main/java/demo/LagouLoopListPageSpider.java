@@ -3,8 +3,8 @@ package demo;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
-import us.codecraft.webmagic.model.annotation.ExtractBy;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
+import us.codecraft.webmagic.pipeline.FilePipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
  *  虽然暴力，但是可控，比如可以失败了就线程暂停一点时间后继续重试
  */
 //@TargetUrl("http://my.oschina.net/flashsword/blog/\\d+")
-public class LagouProcesserLoopListPage implements PageProcessor {
+public class LagouLoopListPageSpider implements PageProcessor {
 
     static List<Object> list = new ArrayList<>();
     static int pageNumInt = 0;
@@ -40,13 +40,19 @@ public class LagouProcesserLoopListPage implements PageProcessor {
         //pipline中保存数据，此例中consolepipeline直接将内容打印到控制台。可自己定义
         String url1 = "https://www.lagou.com/zhaopin/ceo/" ;
         String url2 = "/?filterOption=2&sid=9de38bbecf074f4499e37b5deb050a76";
-        Spider.create(new LagouProcesserLoopListPage()).addUrl(url).addPipeline(new ConsolePipeline()).run();
+        Spider.create(new LagouLoopListPageSpider()).addUrl(url).addPipeline(new ConsolePipeline()).run();
         for (int i = 1; i < pageNumInt; i++) {
             int j = i+1;
             System.out.println(j);
             //获取下一页的链接，将当前页数拼接到url上
             limitTime(60000L);
-           Spider.create(new LagouProcesserLoopListPage()).addUrl(url1+j+url2).addPipeline(new ConsolePipeline()).run();
+           Spider.create(new LagouLoopListPageSpider())
+                   .addUrl(url1+j+url2)
+                   //输出内容到控制台
+                   .addPipeline(new ConsolePipeline())
+                   //输出内容到文件
+                   .addPipeline(new FilePipeline("D:\\webmagic\\lagou"))
+                   .run();
            //重置
             list = new ArrayList<>();
         }
@@ -56,7 +62,7 @@ public class LagouProcesserLoopListPage implements PageProcessor {
     @Override
     public void process(Page page) {
 
-        System.out.println("我来了");
+        System.out.println("爬取开始");
         //从页面发现后续的url地址加入到队列中去
         List<String> urls = page.getHtml().xpath("//li[@class='con_list_item default_list']//div[@class='position']//h3/text()").all();
         String pageNum =  page.getHtml().xpath("//div[@class='pager_container']/a[5]/text()").get();

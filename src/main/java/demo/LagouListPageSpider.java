@@ -5,6 +5,7 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
+import us.codecraft.webmagic.pipeline.FilePipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.List;
  * 通过webmagic的自带的page.addTargetRequest(nextUrl);
  * @author luosan
  */
-public class LagouProcesserListPage implements PageProcessor {
+public class LagouListPageSpider implements PageProcessor {
 
 
     private int curPageNum =1;
@@ -33,7 +34,13 @@ public class LagouProcesserListPage implements PageProcessor {
     public static void main(String[] args) {
         String url = "https://www.lagou.com/zhaopin/ceo/1/?filterOption=2&sid=9de38bbecf074f4499e37b5deb050a76";
         //pipline中保存数据，此例中consolepipeline直接将内容打印到控制台。可自己定义
-        Spider.create(new LagouProcesserListPage()).addUrl(url).addPipeline(new ConsolePipeline()).run();
+        Spider.create(new LagouListPageSpider())
+                .addUrl(url)
+                //输出内容到控制台
+                .addPipeline(new ConsolePipeline())
+                //输出内容到文件
+                .addPipeline(new FilePipeline("D:\\webmagic\\lagou"))
+                .run();
     }
 
     public String getTitle() {
@@ -43,8 +50,6 @@ public class LagouProcesserListPage implements PageProcessor {
     @Override
     public void process(Page page) {
         System.out.println("开始解析");
-        limitTime(60000L);
-
         //从页面发现后续的url地址加入到队列中去
         List<String> urls = page.getHtml().xpath("//li[@class='con_list_item default_list']//div[@class='position']//h3/text()").all();
         Integer curPageNum = Integer.valueOf(page.getHtml().xpath("//a[@class='page_no pager_is_current']/text()").get());
@@ -56,6 +61,7 @@ public class LagouProcesserListPage implements PageProcessor {
                 totalPageNum = Integer.parseInt(tmpTotalPageNum);
             }
         }
+        limitTime(60000L);
         System.out.println("总页数 "+ totalPageNum);
 
         for (int i = 1; i < totalPageNum; i++) {

@@ -17,7 +17,7 @@ import java.util.Set;
 
 
 /**
- * 京东爬虫实例，只展示根据cookie查询个人已登录之后的收获地址
+ * 京东获取个人收货地址爬虫实例，只展示根据cookie查询个人已登录之后的收获地址
  * 利用京东登录之后获得的cookie，可以实现提交订单功能，
  * 比如口罩抢购，针对验证码之类的则需要具体参照其他的事例，比如看看github最新的jd爬虫
  * 附：获取下单列表：Request URL: https://order.jd.com/lazy/getOrderProductInfo.action
