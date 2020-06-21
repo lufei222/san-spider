@@ -1,30 +1,26 @@
-package example;
+package demo;
 
-import org.jsoup.Jsoup;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.model.annotation.ExtractBy;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
-import us.codecraft.webmagic.selector.Html;
-import us.codecraft.webmagic.selector.Selectable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 查询 oschina 博客的文章列表
- *
+ * 拉钩岗位分页查询
+ * 通过webmagic的自带的page.addTargetRequest(nextUrl);
  * @author luosan
- * @since 0.3.2
  */
-//@TargetUrl("http://my.oschina.net/flashsword/blog/\\d+")
 public class LagouProcesserListPage implements PageProcessor {
+
 
     private int curPageNum =1;
     private int visitLimitCount =1;
-    private final int visitLimitCountInPeriod = 5;
+    private final int VISIT_LIMIT_COUNT_IN_PERIOD = 5;
     static int totalPageNum = 0;
 
     // 抓取网站的相关配置，包括编码、抓取间隔、重试次数等
@@ -46,7 +42,9 @@ public class LagouProcesserListPage implements PageProcessor {
 
     @Override
     public void process(Page page) {
-        System.out.println("我来了");
+        System.out.println("开始解析");
+        limitTime(60000L);
+
         //从页面发现后续的url地址加入到队列中去
         List<String> urls = page.getHtml().xpath("//li[@class='con_list_item default_list']//div[@class='position']//h3/text()").all();
         Integer curPageNum = Integer.valueOf(page.getHtml().xpath("//a[@class='page_no pager_is_current']/text()").get());
@@ -60,30 +58,21 @@ public class LagouProcesserListPage implements PageProcessor {
         }
         System.out.println("总页数 "+ totalPageNum);
 
-        for (int i = 0; i < totalPageNum; i++) {
+        for (int i = 1; i < totalPageNum; i++) {
             //获取下一页的链接，将当前页数拼接到url上
             String nextUrl = "https://www.lagou.com/zhaopin/ceo/" + (i + 1) + "/?filterOption=3&sid=d1a2ad7c52424738a127db67692dadc3";
             //将下一页链接添加到爬虫队列中
             page.addTargetRequest(nextUrl);
         }
         List<Object> list = new ArrayList<>();
-        for (int j = 0; j < urls.size(); j++) {
+        for (int j = 1; j < urls.size(); j++) {
             List<String> label = page.getHtml().xpath("//li[@class='con_list_item default_list'][" + j + "]//allText()").all();
             list.add(label);
         }
         //将封装的list对象传到pipeline中
         page.putField("拉钩 当前页 "+curPageNum , list);
         curPageNum++;
-        //限流，稍稍等待停顿，比较简单粗暴，没去做更多反爬虫操作，避免一定时间内反爬虫查询返回空
-        if(visitLimitCount==visitLimitCountInPeriod){
-            try {
-                Thread.sleep(60000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }else{
-            visitLimitCount++;
-        }
+
     }
 
     @Override
@@ -92,4 +81,22 @@ public class LagouProcesserListPage implements PageProcessor {
     }
 
 
+    /****
+     * 限流，稍稍等待停顿，比较简单粗暴，没去做更多反爬虫操作，避免一定时间内反爬虫查询返回空
+     * @param sleepTime
+     */
+    private void limitTime(long sleepTime){
+        //限流，稍稍等待停顿，比较简单粗暴，没去做更多反爬虫操作，避免一定时间内反爬虫查询返回空
+        if(visitLimitCount==VISIT_LIMIT_COUNT_IN_PERIOD){
+            try {
+                visitLimitCount =1;
+                System.out.println("超出爬虫一定时间内限流次数，先等待60秒");
+                Thread.sleep(sleepTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }else{
+            visitLimitCount++;
+        }
+    }
 }

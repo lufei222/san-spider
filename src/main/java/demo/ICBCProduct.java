@@ -1,4 +1,4 @@
-package example;
+package demo;
 
  public class ICBCProduct {
     /**主键*/

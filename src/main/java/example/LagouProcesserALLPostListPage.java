@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 查询 oschina 博客的文章列表
+ * 测试一个时间段内的限流次数
  * @author luosan
  * @since 0.3.2
  */
