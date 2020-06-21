@@ -29,15 +29,24 @@ public class GiteeAutoLoginSpider implements PageProcessor {
 	private static String GITEE_URL = "https://gitee.com/login";
 
 
-	private Site site = Site
-			.me()
-			.setRetryTimes(3)
-			.setSleepTime(1000)
-			.setTimeOut(10000);
+	private Site site = Site.me().setRetryTimes(3).setSleepTime(1000).setTimeOut(10000);
 
 	// 用来存储cookie信息
 	private Set<Cookie> cookies = new HashSet<>();
- 
+
+	@Override
+	public Site getSite() {
+		// 将获取到的cookie信息添加到webmagic中
+		for (Cookie cookie : cookies) {
+			site.addCookie(cookie.getName(), cookie.getValue());
+		}
+		return site;
+	}
+
+	/**
+	 * 解析网页节点具体业务逻辑
+	 * @param page
+	 */
 	@Override
 	public void process(Page page) {
 
@@ -51,19 +60,11 @@ public class GiteeAutoLoginSpider implements PageProcessor {
 
 	}
  
-	@Override
-	public Site getSite() {
- 
-		// 将获取到的cookie信息添加到webmagic中
-		for (Cookie cookie : cookies) {
-			site.addCookie(cookie.getName(), cookie.getValue());
-		}
 
-
-		return site;
-	}
 
     /**
+	 * 登录获取cookie的操作
+	 *
      * 使用selenium+chromedriver驱动完成自动登录gitee获取cookie的操作
      * 对于大多数网站可以直接获得cookie
      * 对于大型的验证比较多的网站，会比较麻烦，建议可以百度 或者 github参照其他项目的selenium自动登录实现
@@ -71,27 +72,18 @@ public class GiteeAutoLoginSpider implements PageProcessor {
      */
 	public void login() {
 		// 登陆
-		System.setProperty("webdriver.chrome.driver",
-				"D:/chromedriver/chromedriver.exe"); // 注册驱动
+		System.setProperty("webdriver.chrome.driver", "D:/chromedriver/chromedriver.exe"); // 注册驱动
 		WebDriver driver = new ChromeDriver();
- 
 		driver.get(GITEE_URL);// 打开网址
- 
 		// 防止页面未能及时加载出来而设置一段时间延迟
 		try {
 			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		// 设置用户名密码
-		driver.findElement(By.id("user_login")).sendKeys(GITEE_USERNAME); // 用户名
-		driver.findElement(By.id("user_password")).sendKeys(GITEE_PASSWORD); // 密码
-		// 模拟点击
-		driver.findElement(By.name("commit"))
-				.click(); // xpath语言：id为form-group-login的form下的button
- 
-		// 防止页面未能及时加载出来而设置一段时间延迟
-		try {
+			// 设置用户名密码
+			driver.findElement(By.id("user_login")).sendKeys(GITEE_USERNAME); // 用户名
+			driver.findElement(By.id("user_password")).sendKeys(GITEE_PASSWORD); // 密码
+			// 模拟点击
+			driver.findElement(By.name("commit")).click();
+			// 防止页面未能及时加载出来而设置一段时间延迟
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -101,8 +93,6 @@ public class GiteeAutoLoginSpider implements PageProcessor {
 		System.out.println("cookie " + cookies);
 
 		driver.close();
-		//退出浏览器，关闭所有页面
-		//driver.quit();
 
 	}
  

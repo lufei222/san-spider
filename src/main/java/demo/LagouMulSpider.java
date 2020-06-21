@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * 拉钩多种不同方式实现的爬虫
+ * lagou多种不同方式实现的爬虫
  * 测试htmlunit、jsoup、httpclient直接爬取
  */
 public class LagouMulSpider {
@@ -29,7 +29,7 @@ public class LagouMulSpider {
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        //直接httpclient爬取拉钩网页，会提示存在恶意访问行为被拦截，
+        //直接httpclient爬取lagou网页，会提示存在恶意访问行为被拦截，
         testHttpClient();
         testJsoup();
         testHtmlunitLagou();
@@ -49,17 +49,17 @@ public class LagouMulSpider {
     private static void testHttpClient() {
         try {
             System.out.println("************************testHttpClient************************");
-            CloseableHttpClient httpClient = HttpClients.createDefault();//创建httpClient
-            HttpGet httpGet = new HttpGet(LAGOU_URL);//创建httpget实例
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            HttpGet httpGet = new HttpGet(LAGOU_URL);
 
-            CloseableHttpResponse response = httpClient.execute(httpGet);//执行get请求
-            HttpEntity entity = response.getEntity();//获取返回实体
-            String content = EntityUtils.toString(entity, "utf-8");//网页内容
-            response.close();//关闭流和释放系统资源
-
+            CloseableHttpResponse response = httpClient.execute(httpGet);
+            HttpEntity entity = response.getEntity();
+            String content = EntityUtils.toString(entity, "utf-8");
+            response.close();
             Jsoup.parse(content);
-            Document doc = Jsoup.parse(content);//解析网页得到文档对象
-            Elements elements = doc.getElementsByTag("title");//获取tag是title的所有dom文档
+            Document doc = Jsoup.parse(content);
+            Elements elements = doc.getElementsByTag("title");
+            System.out.println(elements);
         }catch (Exception e){
             System.out.println(e.getCause());
         }
@@ -80,7 +80,7 @@ public class LagouMulSpider {
     }
 
     /**
-     * 测试循环获取拉钩的页面是否也是五次限制，还是真的能像浏览器一样正常访问.发现其实是一样限流了，超过32秒才能继续访问
+     * 测试循环获取lagou的页面是否也是五次限制，还是真的能像浏览器一样正常访问.发现其实是一样限流了，超过32秒才能继续访问
      * @throws IOException
      * @throws InterruptedException
      */
@@ -113,13 +113,6 @@ public class LagouMulSpider {
         //获取页面的TITLE
         str = page.getTitleText();
         System.out.println(str);
-//        //获取页面的XML代码
-//        str = page.asXml();
-//        System.out.println(str);
-//        //获取页面的文本
-//        str = page.asText();
-//        System.out.println(str);
-        //关闭webclient
         webClient.close();
     }
 }

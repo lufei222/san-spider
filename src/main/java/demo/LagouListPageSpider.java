@@ -19,16 +19,12 @@ import java.util.List;
 public class LagouListPageSpider implements PageProcessor {
 
 
-    private int curPageNum =1;
     private int visitLimitCount =1;
     private final int VISIT_LIMIT_COUNT_IN_PERIOD = 5;
     static int totalPageNum = 0;
 
     // 抓取网站的相关配置，包括编码、抓取间隔、重试次数等
     private Site site = Site.me().setRetryTimes(3).setSleepTime(200);
-
-    @ExtractBy("//li[@class='con_list_item default_list']/data-company")
-    private String title;
 
 
     public static void main(String[] args) {
@@ -41,10 +37,6 @@ public class LagouListPageSpider implements PageProcessor {
                 //输出内容到文件
                 .addPipeline(new FilePipeline("D:\\webmagic\\lagou"))
                 .run();
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     @Override
