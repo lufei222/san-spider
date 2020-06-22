@@ -1,7 +1,8 @@
 ##san-spider
 #### 技术架构
-基于maven的项目，集成了jsoup、webmagic、selenium、htmlunit。
-其中几乎全部代码都基于webmagic去编写
+1、基于maven的项目，集成了jsoup、webmagic、selenium、htmlunit。
+2、其中几乎全部代码都基于webmagic去编写
+3、集成了webmagic和selenium的自动化登录demo
 
 
 #### 功能介绍
@@ -12,8 +13,7 @@
 5、实现码云自动化登录并获取私有项目
 
 
-### webmagic和selenium的教程
-基于java的网页爬虫实践
-
-
 ### 参考文档
+基于java的网页爬虫实践
+https://blog.csdn.net/u011456337/article/details/106887057
+
