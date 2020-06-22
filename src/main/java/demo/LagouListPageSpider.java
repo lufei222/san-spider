@@ -53,7 +53,6 @@ public class LagouListPageSpider implements PageProcessor {
                 totalPageNum = Integer.parseInt(tmpTotalPageNum);
             }
         }
-        limitTime(60000L);
         System.out.println("总页数 "+ totalPageNum);
 
         for (int i = 1; i < totalPageNum; i++) {
@@ -70,6 +69,9 @@ public class LagouListPageSpider implements PageProcessor {
         //将封装的list对象传到pipeline中
         page.putField("拉钩 当前页 "+curPageNum , list);
         curPageNum++;
+
+        limitTime(60000L);
+
 
     }
 
